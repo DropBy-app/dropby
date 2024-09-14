@@ -1,3 +1,5 @@
+import { query } from "../convex/_generated/server";
+
 export interface Task {
   id: number;
   title: string;

@@ -13,7 +13,8 @@ import { Task } from "./data";
 import { TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useLocalStorage } from "usehooks-ts";
-
+import { useQuery } from "convex/react";
+import { api } from "../convex/_generated/api";
 const exampleTasks: Task[] = [
   {
     id: 1,
@@ -62,37 +63,38 @@ const mockConvex = {
 };
 
 export const App: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+  const tasks = useQuery(api.task.allTasks);
+  const completedTasks = useQuery(api.task.completedTasks);
+  // const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
-  useEffect(() => {
-    // Fetch initial tasks (replace with actual Convex query)
-    mockConvex.query("getTasks").then(setTasks);
-    mockConvex.query("getCompletedTasks").then(setCompletedTasks);
-  }, []);
+  // useEffect(() => {
+  //   // Fetch initial tasks (replace with actual Convex query)
+  //   mockConvex.query("getTasks").then(setTasks);
+  //   mockConvex.query("getCompletedTasks").then(setCompletedTasks);
+  // }, []);
 
-  const handleNewTask = (taskData: Task) => {
-    mockConvex.mutation("createTask", taskData).then((newTask) => {
-      setTasks([...tasks, { ...taskData, id: newTask.id }]);
-    });
-  };
+  // const handleNewTask = (taskData: Task) => {
+  //   mockConvex.mutation("createTask", taskData).then((newTask) => {
+  //     setTasks([...tasks, { ...taskData, id: newTask.id }]);
+  //   });
+  // };
 
-  const handleCompleteTask = (taskId: number) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (task) {
-      mockConvex.mutation("completeTask", { taskId }).then(() => {
-        setTasks(tasks.filter((t) => t.id !== taskId));
-        setCompletedTasks([...completedTasks, task]);
-      });
-    }
-  };
+  // const handleCompleteTask = (taskId: number) => {
+  //   const task = tasks.find((t) => t.id === taskId);
+  //   if (task) {
+  //     mockConvex.mutation("completeTask", { taskId }).then(() => {
+  //       setTasks(tasks.filter((t) => t.id !== taskId));
+  //       setCompletedTasks([...completedTasks, task]);
+  //     });
+  //   }
+  // };
 
-  const handleDownvoteTask = (taskId: number) => {
-    mockConvex.mutation("downvoteTask", { taskId }).then(() => {
-      setTasks(tasks.filter((t) => t.id !== taskId));
-    });
-  };
+  // const handleDownvoteTask = (taskId: number) => {
+  //   mockConvex.mutation("downvoteTask", { taskId }).then(() => {
+  //     setTasks(tasks.filter((t) => t.id !== taskId));
+  //   });
+  // };
 
   return (
     <div className="h-full overflow-y-auto flex flex-col md:max-w-screen-md md:mx-auto md:p-8 p-4">
@@ -108,25 +110,33 @@ export const App: React.FC = () => {
           value="todo"
           className="flex-grow min-h-0 m-4 overflow-y-auto"
         >
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              onComplete={handleCompleteTask}
-              onDownvote={handleDownvoteTask}
-            />
-          ))}
-        </TabsContent>
-        <TabsContent value="completed" className="flex-grow">
-          <ScrollArea className="h-full">
-            {completedTasks.map((task) => (
+          {tasks ? (
+            tasks.map((task) => (
               <TaskCard
-                key={task.id}
+                key={task._id}
                 task={task}
                 onComplete={() => {}}
                 onDownvote={() => {}}
               />
-            ))}
+            ))
+          ) : (
+            <div>Loading...</div>
+          )}
+        </TabsContent>
+        <TabsContent value="completed" className="flex-grow">
+          <ScrollArea className="h-full">
+            {completedTasks ? (
+              completedTasks.map((task) => (
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onComplete={() => {}}
+                  onDownvote={() => {}}
+                />
+              ))
+            ) : (
+              <div>Loading...</div>
+            )}
           </ScrollArea>
         </TabsContent>
       </Tabs>
@@ -140,7 +150,7 @@ export const App: React.FC = () => {
               <DialogTitle>Create New Task</DialogTitle>
             </DialogHeader>
             <NewTaskForm
-              onSubmit={handleNewTask}
+              onSubmit={() => {}}
               onClose={() => setIsNewTaskModalOpen(false)}
             />
           </DialogContent>
