@@ -12,6 +12,42 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Task } from "./data";
 import { TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
+import { useLocalStorage } from "usehooks-ts";
+
+const exampleTasks: Task[] = [
+  {
+    id: 1,
+    title: "Take a picture of me",
+    description: "I want a picture of myself",
+    requester: "Alice",
+    taskType: "info",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Buy me a coffee",
+    description: "I want a coffee",
+    requester: "Bob",
+    taskType: "task",
+    completed: false,
+  },
+  {
+    id: 3,
+    title: "Tell me a joke",
+    description: "I want to laugh",
+    requester: "Charlie",
+    taskType: "info",
+    completed: false,
+  },
+  {
+    id: 4,
+    title: "Fix my computer",
+    description: "I need help with my computer",
+    requester: "David",
+    taskType: "task",
+    completed: false,
+  },
+];
 
 // Mock Convex functions (replace with actual Convex integration)
 const mockConvex = {
@@ -21,7 +57,7 @@ const mockConvex = {
   },
   query: (name: string) => {
     console.log(`Query: ${name}`);
-    return Promise.resolve([]);
+    return Promise.resolve(exampleTasks);
   },
 };
 
@@ -59,26 +95,30 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col">
-      <Tabs defaultValue="todo" className="w-full flex-grow flex flex-col">
+    <div className="h-full overflow-y-auto flex flex-col md:max-w-screen-md md:mx-auto md:p-8 p-4">
+      <Tabs
+        defaultValue="todo"
+        className="w-full flex-grow flex flex-col min-h-0 overscroll-contain"
+      >
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="todo">To Do</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
-        <TabsContent value="todo" className="flex-grow">
-          <ScrollArea className="h-[calc(100vh-8rem)]">
-            {tasks.map((task) => (
-              <TaskCard
-                key={task.id}
-                task={task}
-                onComplete={handleCompleteTask}
-                onDownvote={handleDownvoteTask}
-              />
-            ))}
-          </ScrollArea>
+        <TabsContent
+          value="todo"
+          className="flex-grow min-h-0 m-4 overflow-y-auto"
+        >
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              onComplete={handleCompleteTask}
+              onDownvote={handleDownvoteTask}
+            />
+          ))}
         </TabsContent>
         <TabsContent value="completed" className="flex-grow">
-          <ScrollArea className="h-[calc(100vh-8rem)]">
+          <ScrollArea className="h-full">
             {completedTasks.map((task) => (
               <TaskCard
                 key={task.id}
@@ -90,7 +130,7 @@ export const App: React.FC = () => {
           </ScrollArea>
         </TabsContent>
       </Tabs>
-      <div className="p-4">
+      <div>
         <Dialog open={isNewTaskModalOpen} onOpenChange={setIsNewTaskModalOpen}>
           <DialogTrigger asChild>
             <Button className="w-full">New Task</Button>
