@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Task } from "./data";
-import { TaskCard } from "./components/TaskCard";
+import { CompletionData, TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useLocalStorage } from "usehooks-ts";
 import { useQuery } from "convex/react";
@@ -97,7 +97,7 @@ export const App: React.FC = () => {
   // };
 
   return (
-    <div className="h-full overflow-y-auto flex flex-col md:max-w-screen-md md:mx-auto md:p-8 p-4">
+    <div className="h-full overflow-y-auto flex flex-col sm:max-w-screen-sm sm:mx-auto sm:p-8 p-4">
       <Tabs
         defaultValue="todo"
         className="w-full flex-grow flex flex-col min-h-0 overscroll-contain"
