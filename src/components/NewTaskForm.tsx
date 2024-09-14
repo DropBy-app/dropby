@@ -5,47 +5,12 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { LocationEvent } from "leaflet";
+import { LocationMarker } from "./LocationMarker";
+import { LatLngLiteral } from "leaflet";
 
 const getRandomId = () => Math.floor(Math.random() * 100000);
-
-interface Location {
-  lat: number;
-  lng: number;
-}
-
-const mapContainerStyle = {
-  width: "100%",
-  height: "200px",
-};
-
-function LocationMarker({
-  location,
-  setLocation,
-}: {
-  location: Location | null;
-  setLocation: React.Dispatch<React.SetStateAction<Location | null>>;
-}) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (location) {
-      map.setView(location, map.getZoom());
-    }
-  }, [location, map]);
-
-  useEffect(() => {
-    map.locate().on("locationfound", function (e: LocationEvent) {
-      setLocation(e.latlng);
-      map.setView(e.latlng, map.getZoom());
-    });
-  }, [map, setLocation]);
-
-  return location === null ? null : <Marker position={location} />;
-}
-
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: Task) => void;
   onClose: () => void;
@@ -54,7 +19,7 @@ export const NewTaskForm: React.FC<{
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requester, setRequester] = useState("");
-  const [location, setLocation] = useState<Location | null>(null);
+  const [location, setLocation] = useState<LatLngLiteral | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -161,7 +126,10 @@ export const NewTaskForm: React.FC<{
           center={[43.47209774864078, -80.54050653819894]}
           zoom={13}
           scrollWheelZoom={false}
-          style={mapContainerStyle}
+          style={{
+            width: "100%",
+            height: "200px",
+          }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'

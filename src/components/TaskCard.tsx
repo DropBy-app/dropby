@@ -19,6 +19,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Task } from "@/data";
+import { MapContainer, TileLayer } from "react-leaflet";
+import { LocationMarker } from "./LocationMarker";
+import { LatLngLiteral } from "leaflet";
 
 export interface CompletionData {
   notes: string;
@@ -28,18 +31,27 @@ interface TaskCardProps {
   task: Task;
   onComplete: (taskId: number, completionData: CompletionData) => void;
   onDownvote: (taskId: number) => void;
+  completed?: boolean;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
   task,
   onComplete,
   onDownvote,
+  completed = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [completionNotes, setCompletionNotes] = useState("");
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const location: LatLngLiteral | null = (() => {
+    if (!task.location) return null;
+    const [lat, lng] = task.location.split(",").map(parseFloat);
+    console.log("lat", lat, "lng", lng, "task.location", task.location);
+    return { lat, lng };
+  })();
 
   const handleComplete = () => {
     onComplete(task.id, { notes: completionNotes });
@@ -54,23 +66,45 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <CardTitle>{task.title}</CardTitle>
           <CardDescription>{task.requester}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <p className="line-clamp-2">{task.description}</p>
-        </CardContent>
-        <CardFooter className="justify-end space-x-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onDownvote(task.id)}
-          >
-            <ThumbsDown className="h-4 w-4" />
-          </Button>
-          <Button variant="outline" size="icon" onClick={handleOpenModal}>
-            <Check className="h-4 w-4" />
-          </Button>
-        </CardFooter>
+        <div className="flex">
+          <div className="w-1/2">
+            <CardContent>
+              <p className="line-clamp-2">{task.description}</p>
+            </CardContent>
+          </div>
+          <div className="w-1/2">
+            <MapContainer
+              center={[43.47209774864078, -80.54050653819894]}
+              zoom={13}
+              scrollWheelZoom={false}
+              style={{
+                width: "100%",
+                height: "200px",
+              }}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              <LocationMarker location={location} setLocation={() => {}} />
+            </MapContainer>
+          </div>
+        </div>
+        {!completed && (
+          <CardFooter className="justify-end space-x-2">
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => onDownvote(task.id)}
+            >
+              <ThumbsDown className="h-4 w-4" />
+            </Button>
+            <Button variant="outline" size="icon" onClick={handleOpenModal}>
+              <Check className="h-4 w-4" />
+            </Button>
+          </CardFooter>
+        )}
       </Card>
-
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>

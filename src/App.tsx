@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -128,6 +128,7 @@ export const App: React.FC = () => {
               <TaskCard
                 key={task.id}
                 task={task}
+                completed
                 onComplete={() => {}}
                 onDownvote={() => {}}
               />
