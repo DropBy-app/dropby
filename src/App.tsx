@@ -124,20 +124,18 @@ export const App: React.FC = () => {
           )}
         </TabsContent>
         <TabsContent value="completed" className="flex-grow">
-          <ScrollArea className="h-full">
-            {completedTasks ? (
-              completedTasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onComplete={() => {}}
-                  onDownvote={() => {}}
-                />
-              ))
-            ) : (
-              <div>Loading...</div>
-            )}
-          </ScrollArea>
+          {completedTasks ? (
+            completedTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                onComplete={() => {}}
+                onDownvote={() => {}}
+              />
+            ))
+          ) : (
+            <div>Loading...</div>
+          )}
         </TabsContent>
       </Tabs>
       <div>
