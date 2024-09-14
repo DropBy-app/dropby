@@ -126,6 +126,7 @@ export const NewTaskForm: React.FC<{
           center={[43.47209774864078, -80.54050653819894]}
           zoom={13}
           scrollWheelZoom={false}
+          attributionControl={false}
           style={{
             width: "100%",
             height: "200px",

@@ -61,24 +61,41 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <Card className="mb-4">
-        <CardHeader>
-          <CardTitle>{task.title}</CardTitle>
-          <CardDescription>{task.requester}</CardDescription>
-        </CardHeader>
+      <Card className="mb-4 h-[200px]">
         <div className="flex">
-          <div className="w-1/2">
+          <div className="min-w-0 grow">
+            <CardHeader>
+              <CardTitle>{task.title}</CardTitle>
+              <CardDescription>{task.requester}</CardDescription>
+            </CardHeader>
             <CardContent>
               <p className="line-clamp-2">{task.description}</p>
             </CardContent>
+            {!completed && (
+              <CardFooter className="justify-end space-x-2">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onDownvote(task.id)}
+                >
+                  <ThumbsDown className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="icon" onClick={handleOpenModal}>
+                  <Check className="h-4 w-4" />
+                </Button>
+              </CardFooter>
+            )}
           </div>
-          <div className="w-1/2">
+          <div className="w-[200px] h-[200px] rounded-lg overflow-hidden">
             <MapContainer
               center={[43.47209774864078, -80.54050653819894]}
               zoom={13}
               scrollWheelZoom={false}
+              attributionControl={false}
+              dragging={false}
+              zoomControl={false}
               style={{
-                width: "100%",
+                width: "200px",
                 height: "200px",
               }}
             >
@@ -90,20 +107,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </MapContainer>
           </div>
         </div>
-        {!completed && (
-          <CardFooter className="justify-end space-x-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => onDownvote(task.id)}
-            >
-              <ThumbsDown className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={handleOpenModal}>
-              <Check className="h-4 w-4" />
-            </Button>
-          </CardFooter>
-        )}
       </Card>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
