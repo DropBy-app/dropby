@@ -13,8 +13,9 @@ import { Task } from "./data";
 import { CompletionData, TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useLocalStorage } from "usehooks-ts";
-import { useQuery } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
+import { updateTaskCompletion } from "convex/task";
 const exampleTasks: Task[] = [
   {
     id: 1,
@@ -68,6 +69,8 @@ export const App: React.FC = () => {
     () => tasks?.filter((t) => !t.completed),
     [tasks]
   );
+  const updateTaskCompletion = useMutation(api.task.updateTaskCompletion);
+  const newTask = useMutation(api.task.createTask);
   const completedTasks = useMemo(
     () => tasks?.filter((t) => t.completed),
     [tasks]
@@ -121,7 +124,9 @@ export const App: React.FC = () => {
               <TaskCard
                 key={task._id}
                 task={task}
-                onComplete={() => {}}
+                onComplete={() => {
+                  updateTaskCompletion({ id: task._id });
+                }}
                 onDownvote={() => {}}
               />
             ))
@@ -157,7 +162,15 @@ export const App: React.FC = () => {
               <DialogTitle>Create New Task</DialogTitle>
             </DialogHeader>
             <NewTaskForm
-              onSubmit={() => {}}
+              onSubmit={(taskData) => {
+                newTask({
+                  title: taskData.title,
+                  description: taskData.description,
+                  requester: taskData.requester,
+                  taskType: taskData.taskType,
+                  location: "Unknown",
+                });
+              }}
               onClose={() => setIsNewTaskModalOpen(false)}
             />
           </DialogContent>
