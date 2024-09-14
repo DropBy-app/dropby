@@ -159,7 +159,7 @@ export const App: React.FC = () => {
                   description: taskData.description,
                   requester: taskData.requester,
                   taskType: taskData.taskType,
-                  location: "Unknown",
+                  location: taskData.location,
                 });
               }}
               onClose={() => setIsNewTaskModalOpen(false)}
