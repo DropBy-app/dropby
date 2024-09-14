@@ -8,9 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Task } from "./data";
-import { CompletionData, TaskCard } from "./components/TaskCard";
+import { TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useLocalStorage } from "usehooks-ts";
 import { useMutation, useQuery } from "convex/react";
@@ -24,6 +23,7 @@ const exampleTasks: Task[] = [
     requester: "Alice",
     taskType: "info",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 2,
@@ -32,6 +32,7 @@ const exampleTasks: Task[] = [
     requester: "Bob",
     taskType: "task",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 3,
@@ -40,6 +41,7 @@ const exampleTasks: Task[] = [
     requester: "Charlie",
     taskType: "info",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 4,
@@ -48,20 +50,9 @@ const exampleTasks: Task[] = [
     requester: "David",
     taskType: "task",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
 ];
-
-// Mock Convex functions (replace with actual Convex integration)
-const mockConvex = {
-  mutation: (name: string, data: any) => {
-    console.log(`Mutation: ${name}`, data);
-    return Promise.resolve({ id: Date.now() });
-  },
-  query: (name: string) => {
-    console.log(`Query: ${name}`);
-    return Promise.resolve(exampleTasks);
-  },
-};
 
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);

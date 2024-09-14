@@ -1,5 +1,3 @@
-import { query } from "../convex/_generated/server";
-
 export interface Task {
   id: number;
   title: string;
@@ -7,6 +5,7 @@ export interface Task {
   requester: string;
   taskType: TaskType;
   completed: boolean;
+  location: string;
 }
 
 export type TaskType = "info" | "task";
