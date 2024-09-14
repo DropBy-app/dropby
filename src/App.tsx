@@ -23,6 +23,7 @@ const exampleTasks: Task[] = [
     requester: "Alice",
     taskType: "info",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 2,
@@ -31,6 +32,7 @@ const exampleTasks: Task[] = [
     requester: "Bob",
     taskType: "task",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 3,
@@ -39,6 +41,7 @@ const exampleTasks: Task[] = [
     requester: "Charlie",
     taskType: "info",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
   {
     id: 4,
@@ -47,6 +50,7 @@ const exampleTasks: Task[] = [
     requester: "David",
     taskType: "task",
     completed: false,
+    location: "43.47209774864078,-80.54050653819894",
   },
 ];
 
