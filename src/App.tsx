@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
@@ -64,8 +64,14 @@ const mockConvex = {
 
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);
-  const completedTasks = useQuery(api.task.completedTasks);
-  // const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
+  const notCompletedTasks = useMemo(
+    () => tasks?.filter((t) => !t.completed),
+    [tasks]
+  );
+  const completedTasks = useMemo(
+    () => tasks?.filter((t) => t.completed),
+    [tasks]
+  );
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
   // useEffect(() => {
@@ -110,8 +116,8 @@ export const App: React.FC = () => {
           value="todo"
           className="flex-grow min-h-0 m-4 overflow-y-auto"
         >
-          {tasks ? (
-            tasks.map((task) => (
+          {notCompletedTasks ? (
+            notCompletedTasks.map((task) => (
               <TaskCard
                 key={task._id}
                 task={task}
@@ -120,10 +126,13 @@ export const App: React.FC = () => {
               />
             ))
           ) : (
-            <div>Loading...</div>
+            <div>No tasks</div>
           )}
         </TabsContent>
-        <TabsContent value="completed" className="flex-grow">
+        <TabsContent
+          value="completed"
+          className="flex-grow min-h-0 m-4 overflow-y-auto"
+        >
           {completedTasks ? (
             completedTasks.map((task) => (
               <TaskCard
@@ -134,7 +143,7 @@ export const App: React.FC = () => {
               />
             ))
           ) : (
-            <div>Loading...</div>
+            <div>No tasks</div>
           )}
         </TabsContent>
       </Tabs>
