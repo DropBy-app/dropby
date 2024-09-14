@@ -8,22 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ThumbsDown, Check } from "lucide-react";
-
-const getRandomId = () => Math.floor(Math.random() * 100000);
+import { Task } from "./data";
+import { TaskCard } from "./components/TaskCard";
+import { NewTaskForm } from "./components/NewTaskForm";
 
 // Mock Convex functions (replace with actual Convex integration)
 const mockConvex = {
@@ -37,101 +25,7 @@ const mockConvex = {
   },
 };
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  requester: string;
-  taskType: TaskType;
-}
-
-const TaskCard = ({
-  task,
-  onComplete,
-  onDownvote,
-}: {
-  task: Task;
-  onComplete: (taskId: number) => void;
-  onDownvote: (taskId: number) => void;
-}) => (
-  <Card className="mb-4">
-    <CardHeader>
-      <CardTitle>{task.title}</CardTitle>
-      <CardDescription>{task.requester}</CardDescription>
-    </CardHeader>
-    <CardContent>
-      <p className="line-clamp-2">{task.description}</p>
-    </CardContent>
-    <CardFooter className="justify-end space-x-2">
-      <Button variant="outline" size="icon" onClick={() => onDownvote(task.id)}>
-        <ThumbsDown className="h-4 w-4" />
-      </Button>
-      <Button variant="outline" size="icon" onClick={() => onComplete(task.id)}>
-        <Check className="h-4 w-4" />
-      </Button>
-    </CardFooter>
-  </Card>
-);
-
-type TaskType = "info" | "task";
-
-const NewTaskForm = ({
-  onSubmit,
-  onClose,
-}: {
-  onSubmit: (taskData: Task) => void;
-  onClose: () => void;
-}) => {
-  const [taskType, setTaskType] = useState<TaskType>("info");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [requester, setRequester] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({ taskType, title, description, requester, id: getRandomId() });
-    onClose();
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <RadioGroup
-        value={taskType}
-        onValueChange={(e) => setTaskType(e as TaskType)}
-      >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="info" id="info" />
-          <Label htmlFor="info">Information Request</Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="task" id="task" />
-          <Label htmlFor="task">Task Request</Label>
-        </div>
-      </RadioGroup>
-      <Input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
-      <Textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-      />
-      <Input
-        placeholder="Your Name"
-        value={requester}
-        onChange={(e) => setRequester(e.target.value)}
-        required
-      />
-      <Button type="submit">Create Task</Button>
-    </form>
-  );
-};
-
-const DropbyDemo: React.FC = () => {
+export const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [completedTasks, setCompletedTasks] = useState<Task[]>([]);
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -215,5 +109,3 @@ const DropbyDemo: React.FC = () => {
     </div>
   );
 };
-
-export default DropbyDemo;
