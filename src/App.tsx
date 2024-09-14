@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Task } from "./data";
-import { TaskCard } from "./components/TaskCard";
+import { CompletionData, TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -78,7 +78,11 @@ export const App: React.FC = () => {
     });
   };
 
-  const handleCompleteTask = (taskId: number) => {
+  const handleCompleteTask = (
+    taskId: number,
+    completionData: CompletionData
+  ) => {
+    console.log("Completing task", taskId, completionData);
     const task = tasks.find((t) => t.id === taskId);
     if (task) {
       mockConvex.mutation("completeTask", { taskId }).then(() => {
