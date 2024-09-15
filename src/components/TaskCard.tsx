@@ -199,9 +199,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               disabled={!completionNotes}
               onClick={() => {
                 handleComplete();
-                toast(
-                  `Task completed successfully! ${task.requester} thanks you for your help.`
-                );
+                toast(`Task completed successfully! Thanks you for your help.`);
               }}
             >
               Complete Task
