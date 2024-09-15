@@ -48,7 +48,7 @@ export const App: React.FC = () => {
         className="w-full flex-grow flex flex-col min-h-0 overscroll-contain"
       >
         <TabsList className="grid w-full grid-cols-2 select-none">
-          <TabsTrigger value="todo">To Do</TabsTrigger>
+          <TabsTrigger value="todo">Quests</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
         <TabsContent
