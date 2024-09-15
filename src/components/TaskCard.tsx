@@ -64,7 +64,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       <Card className="mb-4 h-[200px]">
         <div className="flex">
           <div className="min-w-0 grow">
-            <CardHeader>
+            <CardHeader className="select-none">
               <CardTitle>{task.title}</CardTitle>
               <CardDescription>{task.requester}</CardDescription>
             </CardHeader>
@@ -86,7 +86,15 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </CardFooter>
             )}
           </div>
-          <div className="w-[200px] h-[200px] rounded-lg overflow-hidden">
+          <div
+            className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer"
+            onClick={() => {
+              window.open(
+                `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
+                "_blank"
+              );
+            }}
+          >
             <MapContainer
               center={[43.47209774864078, -80.54050653819894]}
               zoom={13}
@@ -94,6 +102,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               attributionControl={false}
               dragging={false}
               zoomControl={false}
+              touchZoom={false}
               style={{
                 width: "200px",
                 height: "200px",
