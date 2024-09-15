@@ -32,15 +32,26 @@ export const createTask = mutation({
     description: v.string(),
     requester: v.string(),
     location: v.string(),
+    timeEstimate: v.number(),
+    sizeEstimate: v.string(),
   },
   handler: async (ctx, args) => {
-    const { title, description, requester, location } = args;
+    const {
+      title,
+      description,
+      requester,
+      location,
+      timeEstimate,
+      sizeEstimate,
+    } = args;
     return await ctx.db.insert("tasks", {
       title,
       description,
       completed: false,
       requester,
       location,
+      timeEstimate,
+      sizeEstimate,
     });
   },
 });

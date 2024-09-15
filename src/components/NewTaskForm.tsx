@@ -9,6 +9,7 @@ import { LatLngLiteral } from "leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { useLocalStorage } from "usehooks-ts";
 import { useGeolocation } from "@uidotdev/usehooks";
+import { estimateTimeAndSize, generateTitle } from "@/ai";
 
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
@@ -78,12 +79,16 @@ export const NewTaskForm: React.FC<{
     }
   }, [userGeoLocation]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!location) {
       alert("Please select a location");
       return;
     }
+
+    const title = await generateTitle(description);
+    const timeAndSize = await estimateTimeAndSize(description);
+    console.log("title", title, "timeAndSize", timeAndSize);
 
     onSubmit({
       title,
@@ -91,8 +96,8 @@ export const NewTaskForm: React.FC<{
       requester,
       completed: false,
       location: `${location.lat},${location.lng}`,
-      timeEstimate: 0,
-      sizeEstimate: "small",
+      timeEstimate: timeAndSize.time,
+      sizeEstimate: timeAndSize.size,
     });
     onClose();
   };

@@ -1,16 +1,16 @@
 import { CohereClient } from "cohere-ai";
 
-async function generateTitle(description: string): Promise<string> {
+export async function generateTitle(description: string): Promise<string> {
   const cohere = new CohereClient({
     token: import.meta.env.VITE_COHERE_API_KEY as string,
   });
   const result = await cohere.chat({
     model: "command-r",
     message:
-      "Generate a title given a task description. Keep it simple and descriptive. \n Description: " +
+      "Generate a title given a task description. Keep it simple and descriptive. Generate nothing but the title. \n Description: " +
       description,
   });
-  return result.text;
+  return result.text.replace('"', "");
 }
 
 interface TimeAndSizeEstimate {
@@ -18,7 +18,7 @@ interface TimeAndSizeEstimate {
   size: string;
 }
 
-async function estimateTimeAndSize(
+export async function estimateTimeAndSize(
   description: string
 ): Promise<TimeAndSizeEstimate> {
   const cohere = new CohereClient({
