@@ -290,7 +290,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           </div>
           <DialogFooter className="p-4 pt-0">
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsDetailsModalOpen(false)}
+            >
               Close
             </Button>
           </DialogFooter>
