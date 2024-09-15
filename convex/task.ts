@@ -55,3 +55,11 @@ export const createTask = mutation({
     });
   },
 });
+
+export const updateTaskWithAnswer = mutation({
+  args: { id: v.id("tasks"), answer: v.string() },
+  handler: async (ctx, args) => {
+    const { id, answer } = args;
+    await ctx.db.patch(id, { answer });
+  },
+});
