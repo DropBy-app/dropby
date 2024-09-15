@@ -10,7 +10,7 @@ export async function generateTitle(description: string): Promise<string> {
       "Generate a title given a task description. Keep it simple and descriptive. Generate nothing but the title. \n Description: " +
       description,
   });
-  return result.text.replace('"', "");
+  return result.text.replace(/"/g, "");
 }
 
 interface TimeAndSizeEstimate {
