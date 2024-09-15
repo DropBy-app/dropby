@@ -136,44 +136,41 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="bg-background/30 hover:bg-accent/30 backdrop-blur"
+                    onClick={() => setIsDownvoteModalOpen(true)}
+                  >
+                    <ThumbsDown className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Downvote and dismiss</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {!completed && (
-              <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
-                        onClick={() => setIsDownvoteModalOpen(true)}
-                      >
-                        <ThumbsDown className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Downvote and dismiss</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
-                        onClick={() => setIsModalOpen(true)}
-                      >
-                        <Check className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Complete Task</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="bg-background/30 hover:bg-accent/30 backdrop-blur"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      <Check className="h-4 w-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Complete Task</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
