@@ -21,6 +21,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cohere-ai": "^7.13.1",
     "convex": "^1.16.0",
     "javascript-time-ago": "^2.5.11",
     "leaflet": "^1.9.4",
