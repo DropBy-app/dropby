@@ -13,6 +13,7 @@ import { NewTaskForm } from "./components/NewTaskForm";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { useLocalStorage } from "usehooks-ts";
+import posthog from "posthog-js";
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);
   const [downvotedTasks, setDownvotedTasks] = useLocalStorage<string[]>(
@@ -59,6 +60,10 @@ export const App: React.FC = () => {
                 key={task._id}
                 task={task}
                 onComplete={(_: string, data: CompletionData) => {
+                  posthog.capture("task_completed", {
+                    taskId: task._id,
+                    completionData: data,
+                  });
                   updateTaskCompletion({ id: task._id });
                   updateTaskWithAnswer({
                     id: task._id,
@@ -96,7 +101,7 @@ export const App: React.FC = () => {
       <div>
         <Dialog open={isNewTaskModalOpen} onOpenChange={setIsNewTaskModalOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full select-none">New Task</Button>
+            <Button className="w-full select-none mt-2">New Task</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

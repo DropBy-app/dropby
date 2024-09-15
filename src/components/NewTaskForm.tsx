@@ -11,6 +11,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { useGeolocation } from "@uidotdev/usehooks";
 import { estimateTimeAndSize, generateTitle, moderationCheck } from "@/ai";
 import { toast } from "sonner";
+import posthog from "posthog-js";
 
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
@@ -89,10 +90,23 @@ export const NewTaskForm: React.FC<{
         return;
       }
 
-      if (await moderationCheck(description)) {
+      posthog.capture("task_create_attempt", {
+        description,
+        requester,
+        location: `${location.lat},${location.lng}`,
+      });
+
+      if (await moderationCheck(description + " By " + requester)) {
         alert(
           "Please do not enter inappropriate content. Countermeasure initiated."
         );
+
+        posthog.capture("naughty_task_attempt", {
+          description,
+          requester,
+          location: `${location.lat},${location.lng}`,
+        });
+
         // calculate the 60th fibonacci number inefficiently recursively
         const fib = (n: number): number => {
           if (n <= 1) return n;
@@ -106,6 +120,15 @@ export const NewTaskForm: React.FC<{
       const timeAndSize = await estimateTimeAndSize(description);
       console.log("title", title, "timeAndSize", timeAndSize);
 
+      posthog.capture("task_create", {
+        title,
+        description,
+        requester,
+        location: `${location.lat},${location.lng}`,
+        timeEstimate: timeAndSize.time,
+        sizeEstimate: timeAndSize.size,
+      });
+
       onSubmit({
         title,
         description,
@@ -115,6 +138,7 @@ export const NewTaskForm: React.FC<{
         timeEstimate: timeAndSize.time,
         sizeEstimate: timeAndSize.size,
       });
+      toast.success("Task created successfully");
       onClose();
     } finally {
       setLoading(false);
