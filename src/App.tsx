@@ -16,13 +16,21 @@ import { api } from "../convex/_generated/api";
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);
   const notCompletedTasks = useMemo(
-    () => tasks?.filter((t) => !t.completed),
+    () =>
+      tasks
+        ?.filter((t) => !t.completed)
+        .slice(0)
+        .reverse(),
     [tasks]
   );
   const updateTaskCompletion = useMutation(api.task.updateTaskCompletion);
   const newTask = useMutation(api.task.createTask);
   const completedTasks = useMemo(
-    () => tasks?.filter((t) => t.completed),
+    () =>
+      tasks
+        ?.filter((t) => t.completed)
+        .slice(0)
+        .reverse(),
     [tasks]
   );
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
@@ -61,7 +69,7 @@ export const App: React.FC = () => {
         defaultValue="todo"
         className="w-full flex-grow flex flex-col min-h-0 overscroll-contain"
       >
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 select-none">
           <TabsTrigger value="todo">To Do</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
@@ -106,7 +114,7 @@ export const App: React.FC = () => {
       <div>
         <Dialog open={isNewTaskModalOpen} onOpenChange={setIsNewTaskModalOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full">New Task</Button>
+            <Button className="w-full select-none">New Task</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>

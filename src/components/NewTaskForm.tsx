@@ -99,11 +99,15 @@ export const NewTaskForm: React.FC<{
       >
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="info" id="info" />
-          <Label htmlFor="info">Information Request</Label>
+          <Label htmlFor="info" className="select-none">
+            Information Request
+          </Label>
         </div>
         <div className="flex items-center space-x-2">
           <RadioGroupItem value="task" id="task" />
-          <Label htmlFor="task">Task Request</Label>
+          <Label htmlFor="task" className="select-none">
+            Task Request
+          </Label>
         </div>
       </RadioGroup>
       <Input

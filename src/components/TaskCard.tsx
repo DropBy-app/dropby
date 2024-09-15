@@ -1,12 +1,6 @@
-import React, { useState } from "react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import React, { useMemo, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { useGeolocation } from "@uidotdev/usehooks";
 import { Button } from "./ui/button";
 import { Check, ThumbsDown } from "lucide-react";
 import {
@@ -22,6 +16,7 @@ import { Task } from "@/data";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { LatLngLiteral } from "leaflet";
+import { timeAgo } from "@/lib/utils";
 
 export interface CompletionData {
   notes: string;
@@ -42,6 +37,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [completionNotes, setCompletionNotes] = useState("");
+  const locationState = useGeolocation();
+  const distance = useMemo(() => {
+    if (!task.location) return null;
+    if (locationState.loading) return null;
+    if (!locationState.longitude || !locationState.latitude) return null;
+
+    const [lat, lng] = task.location.split(",").map(parseFloat);
+    const distance = Math.sqrt(
+      (locationState.latitude - lat) ** 2 + (locationState.longitude - lng) ** 2
+    );
+    const distanceKm = distance * 111.32;
+    return distanceKm;
+  }, [
+    task.location,
+    locationState.loading,
+    locationState.longitude,
+    locationState.latitude,
+  ]);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -61,18 +74,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <Card className="mb-4 h-[200px]">
-        <div className="flex">
-          <div className="min-w-0 grow">
-            <CardHeader className="select-none">
-              <CardTitle>{task.title}</CardTitle>
-              <CardDescription>{task.requester}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <p className="line-clamp-2">{task.description}</p>
-            </CardContent>
+      <Card className="mb-4 h-[200px] flex">
+        <div className="min-w-0 grow h-full flex flex-col p-6 pr-4 pb-4">
+          <div className="flex flex-col gap-y-1.5 select-none ">
+            <div className="text-2xl font-semibold leading-none tracking-tight">
+              {task.title}
+            </div>
+            <div className="text-sm text-muted-foreground">
+              {task.requester}
+            </div>
+          </div>
+          <p className="line-clamp-2 select-none">{task.description}</p>
+          <div className="flex items-end justify-end space-x-2 self-end grow w-full">
+            <div className="flex ">
+              {distance && <div>{distance.toFixed(2)} km away</div>}
+              {task._createdAt && <div>{timeAgo.format(task._createdAt)}</div>}
+            </div>
+            <div className="grow"></div>
             {!completed && (
-              <CardFooter className="justify-end space-x-2">
+              <>
                 <Button
                   variant="outline"
                   size="icon"
@@ -83,39 +103,39 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <Button variant="outline" size="icon" onClick={handleOpenModal}>
                   <Check className="h-4 w-4" />
                 </Button>
-              </CardFooter>
+              </>
             )}
           </div>
-          <div className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer">
-            <MapContainer
-              center={[location?.lat || 0, location?.lng || 0]}
-              zoom={13}
-              scrollWheelZoom={false}
-              attributionControl={false}
-              dragging={false}
-              zoomControl={false}
-              touchZoom={false}
-              style={{
-                width: "200px",
-                height: "200px",
+        </div>
+        <div className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer shrink-0">
+          <MapContainer
+            center={[location?.lat || 0, location?.lng || 0]}
+            zoom={13}
+            scrollWheelZoom={false}
+            attributionControl={false}
+            dragging={false}
+            zoomControl={false}
+            touchZoom={false}
+            style={{
+              width: "200px",
+              height: "200px",
+            }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <LocationMarker
+              location={location}
+              setLocation={() => {}}
+              onClick={() => {
+                window.open(
+                  `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
+                  "_blank"
+                );
               }}
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <LocationMarker
-                location={location}
-                setLocation={() => {}}
-                onClick={() => {
-                  window.open(
-                    `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
-                    "_blank"
-                  );
-                }}
-              />
-            </MapContainer>
-          </div>
+            />
+          </MapContainer>
         </div>
       </Card>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
