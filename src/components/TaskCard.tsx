@@ -18,6 +18,13 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { LatLngLiteral } from "leaflet";
 import { timeAgo } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 
 export interface CompletionData {
   notes: string;
@@ -28,8 +35,6 @@ interface TaskCardProps {
   onComplete: (taskId: string, completionData: CompletionData) => void;
   onDownvote: (taskId: string) => void;
   completed?: boolean;
-  downvotedTasks: string[];
-  setDownvotedTasks: (downvotedTasks: string[]) => void;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
@@ -37,13 +42,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onComplete,
   onDownvote,
   completed = false,
-  downvotedTasks,
-  setDownvotedTasks,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDownvoteModalOpen, setIsDownvoteModalOpen] = useState(false);
 
   const [completionNotes, setCompletionNotes] = useState("");
+  const [downvoteReason, setDownvoteReason] = useState("");
   const locationState = useGeolocation();
   const distance = useMemo(() => {
     if (!task.location) return null;
@@ -100,16 +104,39 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <div className="grow"></div>
             {!completed && (
               <>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setIsDownvoteModalOpen(true)}
-                >
-                  <ThumbsDown className="h-4 w-4" />
-                </Button>
-                <Button variant="outline" size="icon" onClick={handleOpenModal}>
-                  <Check className="h-4 w-4" />
-                </Button>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() => setIsDownvoteModalOpen(true)}
+                      >
+                        <ThumbsDown className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Downvote and dismiss</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleOpenModal}
+                      >
+                        <Check className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Complete Task</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </>
             )}
           </div>
@@ -168,7 +195,17 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             <Button variant="outline" onClick={handleCloseModal}>
               Cancel
             </Button>
-            <Button onClick={handleComplete}>Complete Task</Button>
+            <Button
+              disabled={!completionNotes}
+              onClick={() => {
+                handleComplete();
+                toast(
+                  `Task completed successfully! ${task.requester} thanks you for your help.`
+                );
+              }}
+            >
+              Complete Task
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -182,42 +219,30 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               <Label htmlFor="completion-notes" className="col-span-4">
                 Why did you downvote this task?
               </Label>
-              {/* 4 verticle radial button */}
-              <div className="col-span-4 space-y-2">
+              <RadioGroup
+                className="col-span-4 space-y-2"
+                value={downvoteReason}
+                onValueChange={(e) => setDownvoteReason(e as string)}
+              >
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="info"
-                    name="downvote-reason"
-                    value="info"
-                  />
+                  <RadioGroupItem id="info" value="info" />
                   <Label className="select-none" htmlFor="info">
                     Inappropriate request
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="task"
-                    name="downvote-reason"
-                    value="task"
-                  />
+                  <RadioGroupItem id="task" value="task" />
                   <Label className="select-none" htmlFor="task">
                     Task too far
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    id="other"
-                    name="downvote-reason"
-                    value="other"
-                  />
+                  <RadioGroupItem id="other" value="other" />
                   <Label className="select-none" htmlFor="other">
                     Task too complex
                   </Label>
                 </div>
-              </div>
+              </RadioGroup>
             </div>
           </div>
           <DialogFooter>
@@ -230,12 +255,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               Cancel
             </Button>
             <Button
+              disabled={!downvoteReason}
               onClick={() => {
-                setIsDownvoteModalOpen(false);
                 toast(
                   "Thank you. We will adjust your task preference accordingly."
                 );
-                setDownvotedTasks([...downvotedTasks, task._id.toString()]);
+                onDownvote(task._id);
               }}
             >
               Downvote and Dismiss

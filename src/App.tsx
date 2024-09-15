@@ -91,9 +91,9 @@ export const App: React.FC = () => {
                 onComplete={() => {
                   updateTaskCompletion({ id: task._id });
                 }}
-                onDownvote={() => {}}
-                downvotedTasks={downvotedTasks}
-                setDownvotedTasks={setDownvotedTasks}
+                onDownvote={(id: string) => {
+                  setDownvotedTasks([...downvotedTasks, id]);
+                }}
               />
             ))
           ) : (
@@ -112,8 +112,6 @@ export const App: React.FC = () => {
                 completed
                 onComplete={() => {}}
                 onDownvote={() => {}}
-                downvotedTasks={downvotedTasks}
-                setDownvotedTasks={setDownvotedTasks}
               />
             ))
           ) : (
