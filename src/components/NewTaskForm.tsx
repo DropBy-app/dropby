@@ -9,7 +9,8 @@ import { LatLngLiteral } from "leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { useLocalStorage } from "usehooks-ts";
 import { useGeolocation } from "@uidotdev/usehooks";
-import { estimateTimeAndSize, generateTitle } from "@/ai";
+import { estimateTimeAndSize, generateTitle, moderationCheck } from "@/ai";
+import { toast } from "sonner";
 
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
@@ -20,6 +21,7 @@ export const NewTaskForm: React.FC<{
   const [location, setLocation] = useState<LatLngLiteral | null>(null);
   const userGeoLocation = useGeolocation();
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if ("geolocation" in navigator) {
@@ -79,26 +81,44 @@ export const NewTaskForm: React.FC<{
   }, [userGeoLocation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!location) {
-      alert("Please select a location");
-      return;
+    setLoading(true);
+    try {
+      e.preventDefault();
+      if (!location) {
+        alert("Please select a location");
+        return;
+      }
+
+      if (await moderationCheck(description)) {
+        alert(
+          "Please do not enter inappropriate content. Countermeasure initiated."
+        );
+        // calculate the 60th fibonacci number inefficiently recursively
+        const fib = (n: number): number => {
+          if (n <= 1) return n;
+          return fib(n - 1) + fib(n - 2);
+        };
+        fib(60);
+        return;
+      }
+
+      const title = await generateTitle(description);
+      const timeAndSize = await estimateTimeAndSize(description);
+      console.log("title", title, "timeAndSize", timeAndSize);
+
+      onSubmit({
+        title,
+        description,
+        requester,
+        completed: false,
+        location: `${location.lat},${location.lng}`,
+        timeEstimate: timeAndSize.time,
+        sizeEstimate: timeAndSize.size,
+      });
+      onClose();
+    } finally {
+      setLoading(false);
     }
-
-    const title = await generateTitle(description);
-    const timeAndSize = await estimateTimeAndSize(description);
-    console.log("title", title, "timeAndSize", timeAndSize);
-
-    onSubmit({
-      title,
-      description,
-      requester,
-      completed: false,
-      location: `${location.lat},${location.lng}`,
-      timeEstimate: timeAndSize.time,
-      sizeEstimate: timeAndSize.size,
-    });
-    onClose();
   };
 
   return (
@@ -145,7 +165,7 @@ export const NewTaskForm: React.FC<{
           {location.lng.toFixed(6)}
         </p>
       )}
-      <Button type="submit" disabled={!location}>
+      <Button type="submit" disabled={!location || loading}>
         Create Task
       </Button>
     </form>

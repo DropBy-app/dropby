@@ -1,5 +1,5 @@
 import { CohereClient } from "cohere-ai";
-
+import OpenAI from "openai";
 export async function generateTitle(description: string): Promise<string> {
   const cohere = new CohereClient({
     token: import.meta.env.VITE_COHERE_API_KEY as string,
@@ -61,4 +61,14 @@ export async function estimateTimeAndSize(
     throw new Error("Invalid response from Cohere API");
   }
   return result;
+}
+
+export async function moderationCheck(content: string): Promise<boolean> {
+  const openai = new OpenAI({
+    apiKey: import.meta.env.VITE_OPENAI_API_KEY as string,
+    dangerouslyAllowBrowser: true,
+  });
+
+  const moderation = await openai.moderations.create({ input: content });
+  return moderation.results[0].flagged === true;
 }
