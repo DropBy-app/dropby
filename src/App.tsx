@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { TaskCard } from "./components/TaskCard";
+import { CompletionData, TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
@@ -29,6 +29,7 @@ export const App: React.FC = () => {
     [tasks, downvotedTasks]
   );
   const updateTaskCompletion = useMutation(api.task.updateTaskCompletion);
+  const updateTaskWithAnswer = useMutation(api.task.updateTaskWithAnswer);
   const newTask = useMutation(api.task.createTask);
   const completedTasks = useMemo(
     () =>
@@ -60,8 +61,12 @@ export const App: React.FC = () => {
               <TaskCard
                 key={task._id}
                 task={task}
-                onComplete={() => {
+                onComplete={(_: string, data: CompletionData) => {
                   updateTaskCompletion({ id: task._id });
+                  updateTaskWithAnswer({
+                    id: task._id,
+                    answer: data.notes,
+                  });
                 }}
                 onDownvote={(id: string) => {
                   setDownvotedTasks([...downvotedTasks, id]);
