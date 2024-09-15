@@ -8,51 +8,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Task } from "./data";
 import { TaskCard } from "./components/TaskCard";
 import { NewTaskForm } from "./components/NewTaskForm";
-import { useLocalStorage } from "usehooks-ts";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
-import { updateTaskCompletion } from "convex/task";
-const exampleTasks: Task[] = [
-  {
-    id: 1,
-    title: "Take a picture of me",
-    description: "I want a picture of myself",
-    requester: "Alice",
-    taskType: "info",
-    completed: false,
-    location: "43.47209774864078,-80.54050653819894",
-  },
-  {
-    id: 2,
-    title: "Buy me a coffee",
-    description: "I want a coffee",
-    requester: "Bob",
-    taskType: "task",
-    completed: false,
-    location: "43.47209774864078,-80.54050653819894",
-  },
-  {
-    id: 3,
-    title: "Tell me a joke",
-    description: "I want to laugh",
-    requester: "Charlie",
-    taskType: "info",
-    completed: false,
-    location: "43.47209774864078,-80.54050653819894",
-  },
-  {
-    id: 4,
-    title: "Fix my computer",
-    description: "I need help with my computer",
-    requester: "David",
-    taskType: "task",
-    completed: false,
-    location: "43.47209774864078,-80.54050653819894",
-  },
-];
 
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);
