@@ -61,7 +61,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground bg-cover -backdrop-hue-rotate-90;
   }
 
   html {
