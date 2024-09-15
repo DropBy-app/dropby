@@ -9,7 +9,8 @@ import posthog from "posthog-js";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
 posthog.init("phc_koQTZmGlqvAIdYCuEeXflz4Kn4b9DYdDur002krDsM", {
-  api_host: "https://us.i.posthog.com",
+  api_host: "https://dropby-htn24.netlify.app/ingest",
+  ui_host: "https://us.posthog.com",
   person_profiles: "always", // or 'always' to create profiles for anonymous users as well
 });
 
