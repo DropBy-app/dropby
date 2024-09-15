@@ -97,17 +97,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               </CardFooter>
             )}
           </div>
-          <div
-            className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer"
-            onClick={() => {
-              window.open(
-                `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
-                "_blank"
-              );
-            }}
-          >
+          <div className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer">
             <MapContainer
-              center={[43.47209774864078, -80.54050653819894]}
+              center={[location?.lat || 0, location?.lng || 0]}
               zoom={13}
               scrollWheelZoom={false}
               attributionControl={false}
@@ -123,7 +115,16 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              <LocationMarker location={location} setLocation={() => {}} />
+              <LocationMarker
+                location={location}
+                setLocation={() => {}}
+                onClick={() => {
+                  window.open(
+                    `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
+                    "_blank"
+                  );
+                }}
+              />
             </MapContainer>
           </div>
         </div>
