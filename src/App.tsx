@@ -24,7 +24,7 @@ export const App: React.FC = () => {
       tasks
         ?.filter((t) => !t.completed)
         .filter((t) => !downvotedTasks.includes(t._id)),
-    [tasks]
+    [tasks, downvotedTasks]
   );
   const updateTaskCompletion = useMutation(api.task.updateTaskCompletion);
   const newTask = useMutation(api.task.createTask);
@@ -33,7 +33,7 @@ export const App: React.FC = () => {
       tasks
         ?.filter((t) => t.completed)
         .filter((t) => !downvotedTasks.includes(t._id)),
-    [tasks]
+    [tasks, downvotedTasks]
   );
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
