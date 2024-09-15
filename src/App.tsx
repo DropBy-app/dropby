@@ -41,34 +41,6 @@ export const App: React.FC = () => {
   );
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   // Fetch initial tasks (replace with actual Convex query)
-  //   mockConvex.query("getTasks").then(setTasks);
-  //   mockConvex.query("getCompletedTasks").then(setCompletedTasks);
-  // }, []);
-
-  // const handleNewTask = (taskData: Task) => {
-  //   mockConvex.mutation("createTask", taskData).then((newTask) => {
-  //     setTasks([...tasks, { ...taskData, id: newTask.id }]);
-  //   });
-  // };
-
-  // const handleCompleteTask = (taskId: number) => {
-  //   const task = tasks.find((t) => t.id === taskId);
-  //   if (task) {
-  //     mockConvex.mutation("completeTask", { taskId }).then(() => {
-  //       setTasks(tasks.filter((t) => t.id !== taskId));
-  //       setCompletedTasks([...completedTasks, task]);
-  //     });
-  //   }
-  // };
-
-  // const handleDownvoteTask = (taskId: number) => {
-  //   mockConvex.mutation("downvoteTask", { taskId }).then(() => {
-  //     setTasks(tasks.filter((t) => t.id !== taskId));
-  //   });
-  // };
-
   return (
     <div className="h-full overflow-y-auto flex flex-col sm:max-w-screen-sm sm:mx-auto sm:p-8 p-4">
       <Tabs
@@ -81,7 +53,7 @@ export const App: React.FC = () => {
         </TabsList>
         <TabsContent
           value="todo"
-          className="flex-grow min-h-0 m-4 overflow-y-auto"
+          className="flex-grow min-h-0 p-4 overflow-y-auto"
         >
           {notCompletedTasks ? (
             notCompletedTasks.map((task) => (
@@ -91,9 +63,9 @@ export const App: React.FC = () => {
                 onComplete={() => {
                   updateTaskCompletion({ id: task._id });
                 }}
-                onDownvote={() => {}}
-                downvotedTasks={downvotedTasks}
-                setDownvotedTasks={setDownvotedTasks}
+                onDownvote={(id: string) => {
+                  setDownvotedTasks([...downvotedTasks, id]);
+                }}
               />
             ))
           ) : (
@@ -102,7 +74,7 @@ export const App: React.FC = () => {
         </TabsContent>
         <TabsContent
           value="completed"
-          className="flex-grow min-h-0 m-4 overflow-y-auto"
+          className="flex-grow min-h-0 p-4 overflow-y-auto"
         >
           {completedTasks ? (
             completedTasks.map((task) => (
@@ -112,8 +84,6 @@ export const App: React.FC = () => {
                 completed
                 onComplete={() => {}}
                 onDownvote={() => {}}
-                downvotedTasks={downvotedTasks}
-                setDownvotedTasks={setDownvotedTasks}
               />
             ))
           ) : (
