@@ -93,7 +93,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </div>
           <p className="line-clamp-2 select-none">{task.description}</p>
           <div className="flex items-end justify-end space-x-2 self-end grow w-full">
-            <div className="flex ">
+            <div className="flex flex-col text-sm text-muted-foreground select-none">
               {distance && <div>{distance.toFixed(2)} km away</div>}
               <div>{timeAgo.format(task._creationTime)}</div>
             </div>
