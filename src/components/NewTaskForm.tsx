@@ -15,7 +15,6 @@ export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
-  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requester, setRequester] = useLocalStorage("username", "");
   const [location, setLocation] = useState<LatLngLiteral | null>(null);
@@ -104,12 +103,6 @@ export const NewTaskForm: React.FC<{
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <Input
-        placeholder="Title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-      />
       <Textarea
         placeholder="Description"
         value={description}
