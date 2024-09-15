@@ -16,10 +16,7 @@ import { useLocalStorage } from "usehooks-ts";
 import posthog from "posthog-js";
 export const App: React.FC = () => {
   const tasks = useQuery(api.task.allTasks);
-  const [downvotedTasks, setDownvotedTasks] = useLocalStorage<string[]>(
-    "downvotedTasks",
-    []
-  );
+  const [downvotedTasks, _] = useLocalStorage<string[]>("downvotedTasks", []);
   const notCompletedTasks = useMemo(
     () =>
       tasks
@@ -71,7 +68,7 @@ export const App: React.FC = () => {
                     answer: data.notes,
                   });
                 }}
-                onDownvote={async (id: string) => {
+                onDownvote={async () => {
                   await deleteTask({ id: task._id });
                 }}
               />
@@ -91,7 +88,9 @@ export const App: React.FC = () => {
                 task={task}
                 completed
                 onComplete={() => {}}
-                onDownvote={() => {}}
+                onDownvote={async () => {
+                  await deleteTask({ id: task._id });
+                }}
               />
             ))
           ) : (
