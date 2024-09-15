@@ -1,28 +1,38 @@
-import { LatLngLiteral, LocationEvent } from "leaflet";
+import { LatLngLiteral } from "leaflet";
 import { useEffect } from "react";
-import { Marker, useMap } from "react-leaflet";
+import { Marker, Popup, useMapEvents } from "react-leaflet";
 
 export function LocationMarker({
   location,
   setLocation,
+  onClick,
+  goToCurrentLocation = false,
 }: {
   location: LatLngLiteral | null;
   setLocation: React.Dispatch<React.SetStateAction<LatLngLiteral | null>>;
+  onClick?: () => void;
+  goToCurrentLocation?: boolean;
 }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (location) {
-      map.setView(location, map.getZoom());
-    }
-  }, [location, map]);
-
-  useEffect(() => {
-    map.locate().on("locationfound", function (e: LocationEvent) {
+  const map = useMapEvents({
+    click(e) {
       setLocation(e.latlng);
-      map.setView(e.latlng, map.getZoom());
-    });
-  }, [map, setLocation]);
+      if (onClick) onClick();
+    },
+    locationfound(e) {
+      if (goToCurrentLocation) {
+        setLocation(e.latlng);
+        map.flyTo(e.latlng, map.getZoom());
+      }
+    },
+  });
 
-  return location === null ? null : <Marker position={location} />;
+  useEffect(() => {
+    map.locate();
+  }, [map]);
+
+  return location ? (
+    <Marker position={location}>
+      <Popup>You are here</Popup>
+    </Marker>
+  ) : null;
 }

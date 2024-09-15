@@ -7,10 +7,11 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { LocationMarker } from "./LocationMarker";
 import { LatLngLiteral } from "leaflet";
+import { LocationMarker } from "./LocationMarker";
 
 const getRandomId = () => Math.floor(Math.random() * 100000);
+
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: Task) => void;
   onClose: () => void;
@@ -72,6 +73,11 @@ export const NewTaskForm: React.FC<{
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!location) {
+      alert("Please select a location");
+      return;
+    }
+
     onSubmit({
       taskType,
       title,
@@ -79,7 +85,7 @@ export const NewTaskForm: React.FC<{
       requester,
       id: getRandomId(),
       completed: false,
-      location: location ? `${location.lat},${location.lng}` : "",
+      location: `${location.lat},${location.lng}`,
     });
     onClose();
   };
@@ -121,7 +127,7 @@ export const NewTaskForm: React.FC<{
         <div className="bg-red-200 w-full h-[200px] flex items-center justify-center text-red-600">
           {locationError}
         </div>
-      ) : location ? (
+      ) : (
         <MapContainer
           center={[43.47209774864078, -80.54050653819894]}
           zoom={13}
@@ -138,12 +144,16 @@ export const NewTaskForm: React.FC<{
           />
           <LocationMarker location={location} setLocation={setLocation} />
         </MapContainer>
-      ) : (
-        <div className="bg-gray-200 w-full h-[200px] flex items-center justify-center text-gray-600">
-          "Loading location..."
-        </div>
       )}
-      <Button type="submit">Create Task</Button>
+      {location && (
+        <p className="text-sm text-gray-500">
+          Selected location: {location.lat.toFixed(6)},{" "}
+          {location.lng.toFixed(6)}
+        </p>
+      )}
+      <Button type="submit" disabled={!location}>
+        Create Task
+      </Button>
     </form>
   );
 };
