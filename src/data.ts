@@ -10,7 +10,7 @@ export interface ClientTask {
 export interface Task extends ClientTask {
   _id: string;
   // in milliseconds
-  _createdAt: number;
+  _creationTime: number;
 }
 
 export type TaskType = "info" | "task";

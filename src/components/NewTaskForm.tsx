@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ClientTask, Task, TaskType } from "@/data";
+import { ClientTask, TaskType } from "@/data";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -10,8 +10,6 @@ import "leaflet/dist/leaflet.css";
 import { LatLngLiteral } from "leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { useLocalStorage } from "usehooks-ts";
-
-const getRandomId = () => Math.floor(Math.random() * 100000);
 
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
