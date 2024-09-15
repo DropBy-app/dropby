@@ -103,12 +103,9 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => onDownvote(task._id)}
+                  onClick={() => setIsDownvoteModalOpen(true)}
                 >
-                  <ThumbsDown
-                    className="h-4 w-4"
-                    onClick={() => setIsDownvoteModalOpen(true)}
-                  />
+                  <ThumbsDown className="h-4 w-4" />
                 </Button>
                 <Button variant="outline" size="icon" onClick={handleOpenModal}>
                   <Check className="h-4 w-4" />
