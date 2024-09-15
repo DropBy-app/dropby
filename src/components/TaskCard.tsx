@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useGeolocation } from "@uidotdev/usehooks";
 import { Button } from "./ui/button";
-import { Check, ThumbsDown } from "lucide-react";
+import { Check, Maximize2, ThumbsDown } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +43,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onDownvote,
   completed = false,
 }) => {
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDownvoteModalOpen, setIsDownvoteModalOpen] = useState(false);
 
@@ -67,9 +68,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
     locationState.latitude,
   ]);
 
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
-
   const location: LatLngLiteral | null = (() => {
     if (!task.location) return null;
     const [lat, lng] = task.location.split(",").map(parseFloat);
@@ -79,13 +77,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   const handleComplete = () => {
     onComplete(task._id, { notes: completionNotes });
-    handleCloseModal();
+    setIsModalOpen(false);
     setCompletionNotes("");
   };
 
   return (
     <>
-      <Card className="mb-4 md:h-[200px] flex">
+      <Card className="mb-4 md:h-[200px] flex bg-card/50 backdrop-blur">
         <div className="min-w-0 grow h-full flex flex-col p-6 pr-4 pb-4">
           <div className="flex flex-col gap-y-1.5 select-none ">
             <div className="text-2xl font-semibold leading-none tracking-tight">
@@ -110,6 +108,25 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       <Button
                         variant="outline"
                         size="icon"
+                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
+                        onClick={() => setIsDetailsModalOpen(true)}
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>View more details</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
                         onClick={() => setIsDownvoteModalOpen(true)}
                       >
                         <ThumbsDown className="h-4 w-4" />
@@ -127,7 +144,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={handleOpenModal}
+                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
+                        onClick={() => setIsModalOpen(true)}
                       >
                         <Check className="h-4 w-4" />
                       </Button>
@@ -192,7 +210,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={handleCloseModal}>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
               Cancel
             </Button>
             <Button
