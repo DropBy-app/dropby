@@ -85,7 +85,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <Card className="mb-4 h-[200px] flex">
+      <Card className="mb-4 md:h-[200px] flex">
         <div className="min-w-0 grow h-full flex flex-col p-6 pr-4 pb-4">
           <div className="flex flex-col gap-y-1.5 select-none ">
             <div className="text-2xl font-semibold leading-none tracking-tight">
@@ -141,7 +141,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             )}
           </div>
         </div>
-        <div className="w-[200px] h-[200px] rounded-lg overflow-hidden cursor-pointer shrink-0">
+        <div className="md:w-[200px] md:h-[200px] w-[100px] rounded-lg overflow-hidden cursor-pointer shrink-0">
           <MapContainer
             center={[location?.lat || 0, location?.lng || 0]}
             zoom={13}
@@ -151,8 +151,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
             zoomControl={false}
             touchZoom={false}
             style={{
-              width: "200px",
-              height: "200px",
+              width: "100%",
+              height: "100%",
             }}
           >
             <TileLayer

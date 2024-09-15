@@ -81,7 +81,7 @@ export const App: React.FC = () => {
         </TabsList>
         <TabsContent
           value="todo"
-          className="flex-grow min-h-0 m-4 overflow-y-auto"
+          className="flex-grow min-h-0 p-4 overflow-y-auto"
         >
           {notCompletedTasks ? (
             notCompletedTasks.map((task) => (
@@ -102,7 +102,7 @@ export const App: React.FC = () => {
         </TabsContent>
         <TabsContent
           value="completed"
-          className="flex-grow min-h-0 m-4 overflow-y-auto"
+          className="flex-grow min-h-0 p-4 overflow-y-auto"
         >
           {completedTasks ? (
             completedTasks.map((task) => (
