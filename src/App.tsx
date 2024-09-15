@@ -32,6 +32,7 @@ export const App: React.FC = () => {
   const updateTaskCompletion = useMutation(api.task.updateTaskCompletion);
   const updateTaskWithAnswer = useMutation(api.task.updateTaskWithAnswer);
   const newTask = useMutation(api.task.createTask);
+  const deleteTask = useMutation(api.task.deleteTask);
   const completedTasks = useMemo(
     () =>
       tasks
@@ -70,8 +71,8 @@ export const App: React.FC = () => {
                     answer: data.notes,
                   });
                 }}
-                onDownvote={(id: string) => {
-                  setDownvotedTasks([...downvotedTasks, id]);
+                onDownvote={async (id: string) => {
+                  await deleteTask({ id: task._id });
                 }}
               />
             ))
