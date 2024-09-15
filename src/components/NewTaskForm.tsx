@@ -9,6 +9,7 @@ import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngLiteral } from "leaflet";
 import { LocationMarker } from "./LocationMarker";
+import { useLocalStorage } from "usehooks-ts";
 
 const getRandomId = () => Math.floor(Math.random() * 100000);
 
@@ -19,7 +20,7 @@ export const NewTaskForm: React.FC<{
   const [taskType, setTaskType] = useState<TaskType>("info");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [requester, setRequester] = useState("");
+  const [requester, setRequester] = useLocalStorage("username", "");
   const [location, setLocation] = useState<LatLngLiteral | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
 
