@@ -3,13 +3,14 @@ import { createRoot } from "react-dom/client";
 import { App } from "./App.tsx";
 import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
-
+import { Toaster } from "@/components/ui/sonner";
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ConvexProvider client={convex}>
       <App />
+      <Toaster />
     </ConvexProvider>
   </StrictMode>
 );

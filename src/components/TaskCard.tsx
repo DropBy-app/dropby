@@ -16,12 +16,14 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Task } from "@/data";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { LatLngLiteral } from "leaflet";
+import { useLocalStorage } from "usehooks-ts";
 
 export interface CompletionData {
   notes: string;
@@ -32,6 +34,8 @@ interface TaskCardProps {
   onComplete: (taskId: number, completionData: CompletionData) => void;
   onDownvote: (taskId: number) => void;
   completed?: boolean;
+  downvotedTasks: string[];
+  setDownvotedTasks: (downvotedTasks: string[]) => void;
 }
 
 export const TaskCard: React.FC<TaskCardProps> = ({
@@ -39,8 +43,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   onComplete,
   onDownvote,
   completed = false,
+  downvotedTasks,
+  setDownvotedTasks,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDownvoteModalOpen, setIsDownvoteModalOpen] = useState(false);
+
   const [completionNotes, setCompletionNotes] = useState("");
 
   const handleOpenModal = () => setIsModalOpen(true);
@@ -54,7 +62,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   })();
 
   const handleComplete = () => {
-    onComplete(task.id, { notes: completionNotes });
+    onComplete(task._id, { notes: completionNotes });
     handleCloseModal();
     setCompletionNotes("");
   };
@@ -78,7 +86,10 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   size="icon"
                   onClick={() => onDownvote(task.id)}
                 >
-                  <ThumbsDown className="h-4 w-4" />
+                  <ThumbsDown
+                    className="h-4 w-4"
+                    onClick={() => setIsDownvoteModalOpen(true)}
+                  />
                 </Button>
                 <Button variant="outline" size="icon" onClick={handleOpenModal}>
                   <Check className="h-4 w-4" />
@@ -141,6 +152,77 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               Cancel
             </Button>
             <Button onClick={handleComplete}>Complete Task</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isDownvoteModalOpen} onOpenChange={setIsDownvoteModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Downvoting and Dismissing Task</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="completion-notes" className="col-span-4">
+                Why did you downvote this task?
+              </Label>
+              {/* 4 verticle radial button */}
+              <div className="col-span-4 space-y-2">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="info"
+                    name="downvote-reason"
+                    value="info"
+                  />
+                  <Label className="select-none" htmlFor="info">
+                    Inappropriate request
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="task"
+                    name="downvote-reason"
+                    value="task"
+                  />
+                  <Label className="select-none" htmlFor="task">
+                    Task too far
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="other"
+                    name="downvote-reason"
+                    value="other"
+                  />
+                  <Label className="select-none" htmlFor="other">
+                    Task too complex
+                  </Label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDownvoteModalOpen(false);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDownvoteModalOpen(false);
+                toast(
+                  "Thank you. We will adjust your task preference accordingly."
+                );
+                setDownvotedTasks([...downvotedTasks, task._id.toString()]);
+              }}
+            >
+              Downvote and Dismiss
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
