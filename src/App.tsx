@@ -106,7 +106,6 @@ export const App: React.FC = () => {
                   title: taskData.title,
                   description: taskData.description,
                   requester: taskData.requester,
-                  taskType: taskData.taskType,
                   location: taskData.location,
                 });
               }}

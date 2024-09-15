@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { ClientTask, TaskType } from "@/data";
+import { ClientTask } from "@/data";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
-import { Label } from "./ui/label";
 import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { LatLngLiteral } from "leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { useLocalStorage } from "usehooks-ts";
+import { useGeolocation } from "@uidotdev/usehooks";
 
 export const NewTaskForm: React.FC<{
   onSubmit: (taskData: ClientTask) => void;
   onClose: () => void;
 }> = ({ onSubmit, onClose }) => {
-  const [taskType, setTaskType] = useState<TaskType>("info");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requester, setRequester] = useLocalStorage("username", "");
   const [location, setLocation] = useState<LatLngLiteral | null>(null);
+  const userGeoLocation = useGeolocation();
   const [locationError, setLocationError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -70,6 +69,15 @@ export const NewTaskForm: React.FC<{
     }
   }, []);
 
+  useEffect(() => {
+    if (userGeoLocation.latitude && userGeoLocation.longitude) {
+      setLocation({
+        lat: userGeoLocation.latitude,
+        lng: userGeoLocation.longitude,
+      });
+    }
+  }, [userGeoLocation]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!location) {
@@ -78,35 +86,19 @@ export const NewTaskForm: React.FC<{
     }
 
     onSubmit({
-      taskType,
       title,
       description,
       requester,
       completed: false,
       location: `${location.lat},${location.lng}`,
+      timeEstimate: 0,
+      sizeEstimate: "small",
     });
     onClose();
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <RadioGroup
-        value={taskType}
-        onValueChange={(e) => setTaskType(e as TaskType)}
-      >
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="info" id="info" />
-          <Label htmlFor="info" className="select-none">
-            Information Request
-          </Label>
-        </div>
-        <div className="flex items-center space-x-2">
-          <RadioGroupItem value="task" id="task" />
-          <Label htmlFor="task" className="select-none">
-            Task Request
-          </Label>
-        </div>
-      </RadioGroup>
       <Input
         placeholder="Title"
         value={title}
@@ -125,28 +117,30 @@ export const NewTaskForm: React.FC<{
         onChange={(e) => setRequester(e.target.value)}
         required
       />
-      {locationError ? (
-        <div className="bg-red-200 w-full h-[200px] flex items-center justify-center text-red-600">
-          {locationError}
-        </div>
-      ) : (
-        <MapContainer
-          center={[43.47209774864078, -80.54050653819894]}
-          zoom={13}
-          scrollWheelZoom={false}
-          attributionControl={false}
-          style={{
-            width: "100%",
-            height: "200px",
-          }}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <LocationMarker location={location} setLocation={setLocation} />
-        </MapContainer>
-      )}
+      <div className="w-full h-[200px] rounded overflow-hidden">
+        {locationError ? (
+          <div className="bg-red-200  flex items-center justify-center text-red-600">
+            {locationError}
+          </div>
+        ) : (
+          <MapContainer
+            center={[43.47209774864078, -80.54050653819894]}
+            zoom={13}
+            scrollWheelZoom={false}
+            attributionControl={false}
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <LocationMarker location={location} setLocation={setLocation} />
+          </MapContainer>
+        )}
+      </div>
       {location && (
         <p className="text-sm text-gray-500">
           Selected location: {location.lat.toFixed(6)},{" "}

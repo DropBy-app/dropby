@@ -17,7 +17,7 @@ import { Task } from "@/data";
 import { MapContainer, TileLayer } from "react-leaflet";
 import { LocationMarker } from "./LocationMarker";
 import { LatLngLiteral } from "leaflet";
-import { timeAgo } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 import {
   Tooltip,
   TooltipContent,
@@ -71,7 +71,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const location: LatLngLiteral | null = (() => {
     if (!task.location) return null;
     const [lat, lng] = task.location.split(",").map(parseFloat);
-    console.log("lat", lat, "lng", lng, "task.location", task.location);
     return { lat, lng };
   })();
 
@@ -104,7 +103,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               <>
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                       <Button
                         variant="outline"
                         size="icon"
@@ -122,7 +121,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                       <Button
                         variant="outline"
                         size="icon"
@@ -140,7 +139,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
                 <TooltipProvider>
                   <Tooltip>
-                    <TooltipTrigger>
+                    <TooltipTrigger asChild>
                       <Button
                         variant="outline"
                         size="icon"
@@ -190,6 +189,86 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           </MapContainer>
         </div>
       </Card>
+      <Dialog open={isDetailsModalOpen} onOpenChange={setIsDetailsModalOpen}>
+        <DialogContent className="p-0">
+          <div>
+            <div className="bg-muted p-4 sm:rounded-lg">
+              <h1 className="text-2xl font-bold">
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span
+                        className={cn("inline-block w-4 h-4 rounded-full", {
+                          " bg-green-500": !task.completed,
+                          " bg-gray-500": task.completed,
+                        })}
+                      />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{task.completed ? "Completed" : "Open"}</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>{" "}
+                {task.title}
+              </h1>
+              <p className="text-lg">{task.description}</p>
+            </div>
+
+            <div className="p-4 space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Requested by:</span>{" "}
+                  {task.requester}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Location:</span>{" "}
+                  {task.location}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Created:</span>{" "}
+                  {timeAgo.format(task._creationTime)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Distance:</span>{" "}
+                  {distance?.toFixed(2)} km
+                </p>
+              </div>
+              <div className="w-full h-[200px] rounded overflow-hidden cursor-pointer shrink-0">
+                <MapContainer
+                  center={[location?.lat || 0, location?.lng || 0]}
+                  zoom={13}
+                  scrollWheelZoom={false}
+                  attributionControl={false}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                  <LocationMarker
+                    location={location}
+                    setLocation={() => {}}
+                    onClick={() => {
+                      window.open(
+                        `https://www.google.com/maps/search/?api=1&query=${location?.lat},${location?.lng}`,
+                        "_blank"
+                      );
+                    }}
+                  />
+                </MapContainer>
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="p-4 pt-0">
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>

@@ -2,7 +2,6 @@ export interface ClientTask {
   title: string;
   description: string;
   requester: string;
-  taskType: TaskType;
   completed: boolean;
   location: string;
   timeEstimate: number;
@@ -14,5 +13,3 @@ export interface Task extends ClientTask {
   // in milliseconds
   _creationTime: number;
 }
-
-export type TaskType = "info" | "task";
