@@ -41,34 +41,6 @@ export const App: React.FC = () => {
   );
   const [isNewTaskModalOpen, setIsNewTaskModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   // Fetch initial tasks (replace with actual Convex query)
-  //   mockConvex.query("getTasks").then(setTasks);
-  //   mockConvex.query("getCompletedTasks").then(setCompletedTasks);
-  // }, []);
-
-  // const handleNewTask = (taskData: Task) => {
-  //   mockConvex.mutation("createTask", taskData).then((newTask) => {
-  //     setTasks([...tasks, { ...taskData, id: newTask.id }]);
-  //   });
-  // };
-
-  // const handleCompleteTask = (taskId: number) => {
-  //   const task = tasks.find((t) => t.id === taskId);
-  //   if (task) {
-  //     mockConvex.mutation("completeTask", { taskId }).then(() => {
-  //       setTasks(tasks.filter((t) => t.id !== taskId));
-  //       setCompletedTasks([...completedTasks, task]);
-  //     });
-  //   }
-  // };
-
-  // const handleDownvoteTask = (taskId: number) => {
-  //   mockConvex.mutation("downvoteTask", { taskId }).then(() => {
-  //     setTasks(tasks.filter((t) => t.id !== taskId));
-  //   });
-  // };
-
   return (
     <div className="h-full overflow-y-auto flex flex-col sm:max-w-screen-sm sm:mx-auto sm:p-8 p-4">
       <Tabs
