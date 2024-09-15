@@ -5,6 +5,8 @@ export interface ClientTask {
   taskType: TaskType;
   completed: boolean;
   location: string;
+  timeEstimate: number;
+  sizeEstimate: string;
 }
 
 export interface Task extends ClientTask {
