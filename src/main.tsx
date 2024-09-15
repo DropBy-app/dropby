@@ -5,6 +5,15 @@ import "./index.css";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { Toaster } from "@/components/ui/sonner";
 import posthog from "posthog-js";
+import icon from "leaflet/dist/images/marker-icon.png";
+import iconShadow from "leaflet/dist/images/marker-shadow.png";
+import L from "leaflet";
+
+const DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
 const convex = new ConvexReactClient(import.meta.env.VITE_CONVEX_URL as string);
 
