@@ -138,7 +138,7 @@ export const NewTaskForm: React.FC<{
         timeEstimate: timeAndSize.time,
         sizeEstimate: timeAndSize.size,
       });
-      toast.success("Task created successfully");
+      toast.success("Quest created successfully");
       onClose();
     } finally {
       setLoading(false);

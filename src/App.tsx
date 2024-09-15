@@ -101,11 +101,11 @@ export const App: React.FC = () => {
       <div>
         <Dialog open={isNewTaskModalOpen} onOpenChange={setIsNewTaskModalOpen}>
           <DialogTrigger asChild>
-            <Button className="w-full select-none mt-2">New Task</Button>
+            <Button className="w-full select-none mt-2">New Quest</Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Create New Task</DialogTitle>
+              <DialogTitle>Create New Quest</DialogTitle>
             </DialogHeader>
             <NewTaskForm
               onSubmit={(taskData) => {

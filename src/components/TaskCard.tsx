@@ -168,7 +168,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Complete Task</p>
+                      <p>Complete Quest</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -301,7 +301,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Complete Task</DialogTitle>
+            <DialogTitle>Complete Quest</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -328,7 +328,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 toast(`Task completed successfully! Thanks you for your help.`);
               }}
             >
-              Complete Task
+              Complete Quest
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -336,12 +336,12 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       <Dialog open={isDownvoteModalOpen} onOpenChange={setIsDownvoteModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Downvoting and Dismissing Task</DialogTitle>
+            <DialogTitle>Downvoting and Dismissing Quest</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="completion-notes" className="col-span-4">
-                Why did you downvote this task?
+                Why did you downvote this quest?
               </Label>
               <RadioGroup
                 className="col-span-4 space-y-2"
@@ -357,13 +357,13 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem id="task" value="task" />
                   <Label className="select-none" htmlFor="task">
-                    Task too far
+                    Quest too far
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem id="other" value="other" />
                   <Label className="select-none" htmlFor="other">
-                    Task too complex
+                    Quest too complex
                   </Label>
                 </div>
               </RadioGroup>
