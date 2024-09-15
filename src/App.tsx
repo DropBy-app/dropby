@@ -52,10 +52,7 @@ export const App: React.FC = () => {
           <TabsTrigger value="todo">Quests</TabsTrigger>
           <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
-        <TabsContent
-          value="todo"
-          className="flex-grow min-h-0 p-4 overflow-y-auto"
-        >
+        <TabsContent value="todo" className="flex-grow min-h-0 overflow-y-auto">
           {notCompletedTasks ? (
             notCompletedTasks.map((task) => (
               <TaskCard
@@ -79,7 +76,7 @@ export const App: React.FC = () => {
         </TabsContent>
         <TabsContent
           value="completed"
-          className="flex-grow min-h-0 p-4 overflow-y-auto"
+          className="flex-grow min-h-0 overflow-y-auto"
         >
           {completedTasks ? (
             completedTasks.map((task) => (

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { useGeolocation } from "@uidotdev/usehooks";
 import { Button } from "./ui/button";
-import { Check, Maximize2, ThumbsDown } from "lucide-react";
+import { Check, Maximize2, ThumbsDown, UserRoundCheck } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -82,43 +82,62 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   return (
     <>
-      <Card className="mb-4 md:h-[200px] flex bg-card/50 backdrop-blur">
-        <div className="min-w-0 grow h-full flex flex-col p-6 pr-4 pb-4">
-          <div className="flex flex-col gap-y-1.5 select-none ">
-            <div className="text-2xl font-semibold leading-none tracking-tight">
+      <Card className="mb-4 md:h-[200px] flex bg-card/50 backdrop-blur overflow-hidden">
+        <div className="min-w-0 grow h-full flex flex-col">
+          <div className="flex flex-col gap-y-1.5 select-none pt-6 pr-4 pl-6">
+            <div className="text-xl font-semibold leading-none tracking-tight truncate pb-1.5 -mb-1.5">
               {task.title}
             </div>
             <div className="text-sm text-muted-foreground">
-              {task.requester}
+              By {task.requester}
             </div>
           </div>
-          <p className="line-clamp-2 select-none">{task.description}</p>
-          <div className="flex items-end justify-end space-x-2 self-end grow w-full">
-            <div className="flex flex-col text-sm text-muted-foreground select-none">
-              {distance && <div>{distance.toFixed(2)} km away</div>}
-              <div>{timeAgo.format(task._creationTime)}</div>
-            </div>
+          <p
+            className={cn(
+              "line-clamp-2 select-none pl-6 pr-4",
+              completed && "bg-green-300/30 pt-2 mt-2"
+            )}
+          >
+            {completed && (
+              <span className="text-green-700 font-bold">
+                <UserRoundCheck className="h-4 w-4 mb-0.5 inline-block mr-1" />
+                Answered: <br />
+              </span>
+            )}
+            {completed ? task.answer : task.description}
+          </p>
+          <div
+            className={cn(
+              "flex items-end justify-end space-x-2 self-end grow w-full pl-6 pr-4 pb-4",
+              completed && "bg-green-300/30"
+            )}
+          >
+            {!completed && (
+              <div className="flex flex-col text-sm text-muted-foreground select-none">
+                {distance && <div>{distance.toFixed(2)} km away</div>}
+                <div>{timeAgo.format(task._creationTime)}</div>
+              </div>
+            )}
             <div className="grow"></div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="bg-background/30 hover:bg-accent/30 backdrop-blur"
+                    onClick={() => setIsDetailsModalOpen(true)}
+                  >
+                    <Maximize2 className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>View more details</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {!completed && (
               <>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="bg-background/30 hover:bg-accent/30 backdrop-blur"
-                        onClick={() => setIsDetailsModalOpen(true)}
-                      >
-                        <Maximize2 className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>View more details</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -199,8 +218,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                     <TooltipTrigger asChild>
                       <span
                         className={cn("inline-block w-4 h-4 rounded-full", {
-                          " bg-green-500": !task.completed,
-                          " bg-gray-500": task.completed,
+                          " bg-gray-500": !task.completed,
+                          " bg-green-500": task.completed,
                         })}
                       />
                     </TooltipTrigger>
@@ -211,29 +230,19 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 </TooltipProvider>{" "}
                 {task.title}
               </h1>
-              <p className="text-lg">{task.description}</p>
             </div>
 
-            <div className="p-4 space-y-4">
-              <div>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Requested by:</span>{" "}
-                  {task.requester}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Location:</span>{" "}
-                  {task.location}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Created:</span>{" "}
-                  {timeAgo.format(task._creationTime)}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-semibold">Distance:</span>{" "}
-                  {distance?.toFixed(2)} km
-                </p>
-              </div>
-              <div className="w-full h-[200px] rounded overflow-hidden cursor-pointer shrink-0">
+            <div className="p-4">
+              <h2 className="text-xl font-semibold">Description</h2>
+              <p className="text-md line-clamp-6">{task.description}</p>
+              {task.completed && (
+                <>
+                  <h2 className="text-xl font-semibold">Answer</h2>
+                  <p className="text-md line-clamp-6">{task.answer}</p>
+                </>
+              )}
+
+              <div className="w-full h-[200px] rounded overflow-hidden cursor-pointer shrink-0 my-4">
                 <MapContainer
                   center={[location?.lat || 0, location?.lng || 0]}
                   zoom={13}
@@ -259,6 +268,24 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                     }}
                   />
                 </MapContainer>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Requested by:</span>{" "}
+                  {task.requester}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Location:</span>{" "}
+                  {task.location}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Created:</span>{" "}
+                  {timeAgo.format(task._creationTime)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  <span className="font-semibold">Distance:</span>{" "}
+                  {distance?.toFixed(2)} km
+                </p>
               </div>
             </div>
           </div>

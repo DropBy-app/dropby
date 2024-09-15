@@ -12,4 +12,5 @@ export interface Task extends ClientTask {
   _id: string;
   // in milliseconds
   _creationTime: number;
+  answer: string;
 }
