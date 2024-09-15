@@ -31,8 +31,8 @@ export interface CompletionData {
 
 interface TaskCardProps {
   task: Task;
-  onComplete: (taskId: number, completionData: CompletionData) => void;
-  onDownvote: (taskId: number) => void;
+  onComplete: (taskId: string, completionData: CompletionData) => void;
+  onDownvote: (taskId: string) => void;
   completed?: boolean;
   downvotedTasks: string[];
   setDownvotedTasks: (downvotedTasks: string[]) => void;
@@ -84,7 +84,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <Button
                   variant="outline"
                   size="icon"
-                  onClick={() => onDownvote(task.id)}
+                  onClick={() => onDownvote(task._id)}
                 >
                   <ThumbsDown
                     className="h-4 w-4"
